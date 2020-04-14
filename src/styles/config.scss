@@ -1,0 +1,23 @@
+// 主题颜色
+$mainColor: #34e7e4;
+$bgColor: #808e9b;
+$mainText: #666;
+
+// 常用样式
+.pull-left {
+  float: left;
+}
+.pull-right {
+  float: left;
+}
+.clearfix {
+  &::after {
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    height: 0;
+  }
+}
+
+
