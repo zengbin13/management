@@ -14,7 +14,7 @@ module.exports = {
   // 生成的 HTML 中的 <link rel="stylesheet"> 和 <script> 标签上启用 Subresource Integrity (SRI)
   integrity: false,
   // webpack相关配置
-  chainWebpack: config => {
+  chainWebpack: (config) => {
     //别名解析
     config.resolve.alias
       .set("vue$", "vue/dist/vue.esm.js")
@@ -27,10 +27,10 @@ module.exports = {
       .loader("svg-sprite-loader")
       .options({
         symbolId: "icon-[name]",
-        include: ["./src/icons"]
+        include: ["./src/icons"],
       });
   },
-  configureWebpack: config => {
+  configureWebpack: (config) => {
     if (process.env.NODE_ENV === "production") {
       // 生产环境
       config.mode = "production";
@@ -48,11 +48,11 @@ module.exports = {
     // css预设器配置项
     loaderOptions: {
       sass: {
-        prependData: `@import "./src/styles/main.scss";`
-      }
+        prependData: `@import "./src/styles/main.scss";`,
+      },
     },
     // 是否启用 CSS modules for all css / pre-processor files.
-    requireModuleExtension: true
+    requireModuleExtension: true,
   },
   // 是否使用 thread-loader
   parallel: require("os").cpus().length > 1,
@@ -60,22 +60,30 @@ module.exports = {
   pwa: {},
   // webpack-dev-server 相关配置
   devServer: {
-    open: false, // 编译完成是否打开网页
+    open: true, // 编译完成是否打开网页
     host: "0.0.0.0", // 指定使用地址，默认localhost,0.0.0.0代表可以被外界访问
     port: 8080, // 访问端口
     https: false, // 编译失败时刷新页面
     hot: true, // 开启热加载
     hotOnly: false,
     proxy: null, // 设置代理
+    proxy: {
+      ///api开头的接口，代理访问规则
+      "/api": {
+        target: "http://www.web-jshtml.cn/productapi", //代理的域名
+        changeOrigin: true, //是否启用代理
+        pathRewrite: {  //重写请求
+          "^/api": ""
+        }
+      }
+    },
     overlay: {
       // 全屏模式下是否显示脚本错误
       warnings: true,
-      errors: true
+      errors: true,
     },
-    before: app => {}
+    before: (app) => {},
   },
   // 第三方插件配置
-  pluginOptions: {
-    
-  }
+  pluginOptions: {},
 };
