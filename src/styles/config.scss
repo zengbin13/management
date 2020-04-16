@@ -1,5 +1,5 @@
 // 主题颜色
-$mainColor: #34e7e4;
+$mainColor: #2eaaa8;
 $bgColor: #344a5f;
 $mainText: #666;
 
@@ -20,4 +20,12 @@ $mainText: #666;
   }
 }
 
+//css3属性兼容性处理
+@mixin webkit($type, $value) {
+  -webkit-#{$type}: $value;
+  -moz-#{$type}: $value;
+  -o-#{$type}: $value;
+  -ms-#{$type}: $value;
+  #{$type}: $value;
+}
 

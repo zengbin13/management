@@ -3,37 +3,17 @@
     <div class="container">
       <!-- tab bar 部分 -->
       <div class="tabs">
-        <div
-          class="tab-item"
-          v-for="(item, index) in tabs"
-          :key="index"
-          :class="{ active: currentIndex === index }"
-          @click="toggleIndex(index)"
-        >
+        <div class="tab-item" v-for="(item, index) in tabs" :key="index" :class="{ active: currentIndex === index }" @click="toggleIndex(index)">
           {{ item }}
         </div>
       </div>
       <!-- 表单部分 -->
-      <el-form
-        :model="loginFrom"
-        ref="loginFrom"
-        :rules="rules"
-        status-icon
-        label-position="top"
-      >
+      <el-form :model="loginFrom" ref="loginFrom" :rules="rules" status-icon label-position="top">
         <el-form-item label="邮箱" prop="mail">
-          <el-input
-            v-model="loginFrom.mail"
-            placeholder="1762030184@qq.com"
-          ></el-input>
+          <el-input v-model="loginFrom.mail" placeholder=""></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input
-            type="password"
-            v-model="loginFrom.password"
-            :minlength="6"
-            :maxlength="20"
-          ></el-input>
+          <el-input type="password" v-model="loginFrom.password" :minlength="6" :maxlength="20"></el-input>
         </el-form-item>
         <el-form-item label="重复密码" v-if="isShowPassword2" prop="password2">
           <el-input type="password" v-model="loginFrom.password2"></el-input>
@@ -44,13 +24,7 @@
               <el-input v-model="loginFrom.checkCode"></el-input>
             </el-col>
             <el-col :span="9">
-              <el-button
-                type="success"
-                class="code-button"
-                :disabled="checkCode.disabled"
-                @click="getCheckCode()"
-                >{{ checkCode.text }}</el-button
-              >
+              <el-button type="success" class="code-button" :disabled="checkCode.disabled" @click="getCheckCode()">{{ checkCode.text }}</el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -69,7 +43,7 @@ import {
   stripscript,
   validateMailFormat,
   validatePassFormat,
-  validateCodeFormat,
+  validateCodeFormat
 } from "@/utils/validate";
 import { GetCheckCode, Register, Login } from "@/api/login";
 import sha1 from "js-sha1";
@@ -120,18 +94,19 @@ export default {
       currentIndex: 0,
       isShowPassword2: false,
       loginFrom: {
-        mail: "",
+        mail: "1762030184@qq.com",
         password: "",
         password2: "",
-        checkCode: "",
+        checkCode: ""
       },
       rules: {
         mail: { validator: validateMail, trigger: "blur" },
         password: { validator: validatePass, trigger: "blur" },
         password2: { validator: validatePass2, trigger: "blur" },
-        checkCode: { validator: validateCode, trigger: "blur" },
+        checkCode: { validator: validateCode, trigger: "blur" }
       },
       checkCode: { disabled: false, text: "获取验证码" },
+      timer: null
     };
   },
   computed: {
@@ -140,10 +115,10 @@ export default {
     },
     module_zh() {
       return this.currentIndex === 0 ? "登录" : "注册";
-    },
+    }
   },
   methods: {
-    //方法:切换tab状态
+    //切换tab状态
     toggleIndex(index) {
       //高亮
       this.currentIndex = index;
@@ -151,15 +126,19 @@ export default {
       this.isShowPassword2 = index === 1 ? true : false;
       // 清空表单内容
       this.$refs.loginFrom.resetFields();
+      //清除倒计时
+      this.clearCountdown();
+      //更改获取验证码按钮状态
+      this.changeCodeBtnStatus(false, "获取验证码");
     },
-    //方法:获取验证码
+    //获取验证码
     getCheckCode() {
       //前端校验
       if (this.loginFrom.mail === "") {
         this.$message({
           type: "error",
           message: "校验: 邮箱地址不能为空哟",
-          showClose: true,
+          showClose: true
         });
         return;
       }
@@ -167,47 +146,55 @@ export default {
         this.$message({
           type: "error",
           message: "校验: 邮箱地址格式有误",
-          showClose: true,
+          showClose: true
         });
         return;
       }
       let data = {
         username: this.loginFrom.mail,
-        module: this.module,
+        module: this.module
       };
       //请求过程按钮禁用，显示发送中
-      this.checkCode = { disabled: true, text: "发送中" };
+      this.changeCodeBtnStatus(true, "发送中");
       GetCheckCode(data)
-        .then((response) => {
+        .then(response => {
           //倒计时60秒,按钮禁用
-          this.btnCountdown(5);
+          this.btnCountdown(15);
         })
-        .catch((error) => {
+        .catch(error => {
           this.checkCode = { disabled: false, text: "获取验证码" };
-
           console.log(error);
         });
     },
-    //方法:按钮倒计时60秒
+    //按钮倒计时
     btnCountdown(time) {
-      let timer = null;
-      timer = setInterval(() => {
-        this.checkCode = { disabled: true, text: `倒计时${time}秒` };
+      this.timer = null;
+      this.timer = setInterval(() => {
+        this.changeCodeBtnStatus(true, `倒计时${time}秒`);
         if (time === 0) {
-          clearInterval(timer);
+          clearInterval(this.timer);
           //倒计时结束,可点击再次发送
-          this.checkCode = { disabled: false, text: "再次发送" };
+          this.changeCodeBtnStatus(false, "再次发送");
         }
         time--;
       }, 1000);
     },
+    //清除按钮倒计时
+    clearCountdown() {
+      clearInterval(this.timer);
+    },
+    //更改验证码按钮状态
+    changeCodeBtnStatus(disabled, text) {
+      this.checkCode.disabled = disabled;
+      this.checkCode.text = text;
+    },
     //提交表单
     submitForm() {
-      this.$refs.loginFrom.validate((valid) => {
+      this.$refs.loginFrom.validate(valid => {
         let data = {
           username: this.loginFrom.mail,
           password: sha1(this.loginFrom.password),
-          code: this.loginFrom.checkCode,
+          code: this.loginFrom.checkCode
         };
         if (valid && this.module === "login") {
           this.login(data);
@@ -221,26 +208,26 @@ export default {
     //请求login数据
     login(data) {
       Login(data)
-        .then((response) => {
+        .then(response => {
           //路由跳转到index页面
           this.$router.push({ path: "/index" });
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error);
         });
     },
     //请求register数据
     register(data) {
       Register(data)
-        .then((response) => {
+        .then(response => {
           this.toggleIndex(0);
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error);
         });
-    },
+    }
   },
-  mounted() {},
+  mounted() {}
 };
 </script>
 
