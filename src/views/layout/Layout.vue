@@ -1,21 +1,26 @@
 <template>
   <el-container class="layout">
-    <el-aside width="200px">
-      <layout-aside></layout-aside>
-    </el-aside>
-    <el-container>
-      <el-header>Header</el-header>
-      <el-main>Main</el-main>
+    <!-- nav content -->
+    <layout-aside></layout-aside>
+    <el-container direction="vertical">
+      <!-- header content -->
+      <layout-header></layout-header>
+      <!-- main content -->
+      <layout-main></layout-main>
     </el-container>
   </el-container>
 </template>
 
 <script>
-import LayoutAside from './chilren/LayoutAside'
+import LayoutAside from "./chilren/LayoutAside";
+import LayoutHeader from "./chilren/LayoutHeader";
+import LayoutMain from "./chilren/LayoutMain";
 export default {
   name: "Layout",
   components: {
-    LayoutAside
+    LayoutAside,
+    LayoutHeader,
+    LayoutMain
   }
 };
 </script>
