@@ -17,13 +17,15 @@ Vue.use(ElementUI);
 
 //全局组件
 //svg-icon组件
-import "./icons/index"
+import "./icons/index";
 
 //功能插件
 // import "./utils/setRem";
+import "./router/permit";
+
 
 new Vue({
   router,
   store,
-  render: h => h(App)
+  render: (h) => h(App),
 }).$mount("#app");

@@ -70,7 +70,7 @@ module.exports = {
     proxy: {
       ///api开头的接口，代理访问规则
       "/api": {
-        target: "http://www.web-jshtml.cn/productapi", //代理的域名
+        target: "http://www.web-jshtml.cn/productapi/token", //代理的域名
         changeOrigin: true, //是否启用代理
         pathRewrite: {  //重写请求
           "^/api": ""

@@ -35,11 +35,11 @@ service.interceptors.response.use(
       });
       return Promise.reject(error);
     } else {
-      Message({
-        showClose: true,
-        message: data.message,
-        type: "success",
-      });
+      // Message({
+      //   showClose: true,
+      //   message: data.message,
+      //   type: "success",
+      // });
       return response;
     }
   },

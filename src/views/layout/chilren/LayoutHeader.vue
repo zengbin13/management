@@ -5,8 +5,8 @@
     </div>
     <div class="user-info pull-right">
       <img src="../../../assets/img/avatar.jpeg" alt="avatar" />
-      <span>管理员</span>
-      <div class="exit">
+      <span>{{ userName }}</span>
+      <div class="exit" @click="exitConsole()">
         <svg-icon icon-class="power" class="icon-power"></svg-icon>
       </div>
     </div>
@@ -15,16 +15,37 @@
 
 <script>
 import SvgIcon from "../../../components/svgIcon/SvgIcon";
+import { getUserName, removeUserName, removeToKen } from "@/utils/cookie.js";
+
 export default {
   name: "LayoutHeader",
   components: {
     SvgIcon
   },
   methods: {
+    //触发控制侧边栏宽度的函数
     collapseAside() {
       this.$store.commit({
         type: "SET_COLLAPSE"
       });
+    },
+    //退出控制页面
+    exitConsole() {
+      //清除cookie
+      removeUserName()
+      removeToKen()
+      //跳转到login
+      this.$router.push("/login")
+      //message提醒
+      this.$message({
+        type: "success",
+        message: "退出成功"
+      })
+    }
+  },
+  computed: {
+    userName() {
+      return getUserName();
     }
   }
 };

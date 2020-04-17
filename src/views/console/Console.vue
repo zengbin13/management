@@ -6,10 +6,9 @@
 
 <script>
 export default {
-name: "Console",
-}
+  name: "Console",
+  mounted() {},
+};
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

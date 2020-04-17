@@ -8,7 +8,7 @@
       </a>
     </h1>
     <!-- nav menu -->
-    <el-menu :collapse="isCollapse" :collapse-transition="true" :router="true" text-color="#fff" active-text-color="#fff" :unique-opened="true" default-active="/index" class="el-menu-vertical">
+    <el-menu :collapse="isCollapse" :collapse-transition="true" :router="true" text-color="#fff" active-text-color="#fff" :unique-opened="true" default-active="/index" class="el-menu-nav">
       <template v-for="(submenu, index) in navList">
         <el-submenu v-if="submenu.meta" :key="index" :index="submenu.path">
           <template slot="title">
@@ -47,20 +47,18 @@ export default {
 };
 </script>
 
-<style lang="scss" >
+<style lang="scss">
 .layout-aside {
   height: 100vh;
   background-color: $bgColor;
   overflow: hidden;
-  transition: all 1s ease;
+  @include webkit(transition, all 1s ease 0s);
 }
 .isCollapse {
   width: 60px !important;
-  .logo {
-    .vue {
-      width: 35px;
-      height: 35px;
-    }
+  .vue {
+    width: 35px !important;
+    height: 35px !important;
   }
 }
 .layout-aside {
@@ -71,14 +69,15 @@ export default {
       width: 80px;
       height: 80px;
       margin-top: 30px;
+      @include webkit(transition, all 1s ease 0s);
     }
   }
   .icon {
     margin-right: 12px;
   }
-  .el-menu-vertical {
+  .el-menu-nav {
     border: none;
-    background-color: transparent;
+    background-color: #344a5f;
     .el-submenu__title {
       background-color: transparent;
       &:hover {
@@ -91,9 +90,6 @@ export default {
       &:hover {
         background-color: rgb(226, 150, 150);
       }
-    }
-    .el-menu-item.is-active {
-      background-color: #f56c6c;
     }
   }
 }

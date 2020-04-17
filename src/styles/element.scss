@@ -1,0 +1,12 @@
+.el-menu-item.is-active {
+  background-color: $mainColor !important;
+}
+.el-menu--vertical {
+  .el-menu-item {
+    background-color: rgba($color: #344a5f, $alpha: 0.8) !important;
+    &:hover {
+      background-color: rgb(226, 150, 150) !important;
+    }
+  }
+}
+
