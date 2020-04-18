@@ -1,7 +1,7 @@
 //主颜色 背景色 辅助色
 $mainColor: #f56c6c;
 $bgColor: #344a5f;
-$secColor:#cccccc;
+$secColor: #cccccc;
 $mainText: #666;
 
 // 常用样式
@@ -29,4 +29,18 @@ $mainText: #666;
   -ms-#{$type}: $value;
   #{$type}: $value;
 }
+
+// label 动态宽度
+@mixin label($align:center, $width:50, $line-height:40) {
+  label {
+    float: left;
+    width: $width + px;
+    text-align: $align;
+    line-height: $line-height + px;
+  }
+  .wrap-content {
+    margin-left: $width + px;
+  }
+}
+
 

@@ -237,9 +237,9 @@ export default {
     //请求login数据
     login(data) {
       this.$store
-        .dispatch("login", data)
+        .dispatch("login/login", data)
         .then((response) => {
-          let userName = this.$store.state.userName
+          let userName = this.$store.state.login.userName
           this.$message({
             type: "success",
             message: `欢迎用户${userName}登录`,

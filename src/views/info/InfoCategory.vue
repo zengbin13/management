@@ -1,15 +1,14 @@
 <template>
-<div>
-  InfoCategory
-</div>
+  <div>
+    InfoCategory
+  </div>
 </template>
 
 <script>
 export default {
-name: "InfoCategory",
-}
+  name: "InfoCategory"
+};
 </script>
 
 <style lang="scss" scoped>
-
 </style>

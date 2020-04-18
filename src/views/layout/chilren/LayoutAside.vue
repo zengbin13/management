@@ -38,7 +38,7 @@ export default {
   },
   computed: {
     isCollapse() {
-      return this.$store.state.isCollapse;
+      return this.$store.state.app.isCollapse;
     }
   },
   mounted() {

@@ -1,5 +1,6 @@
 import router from "./index";
 import { getToKen } from "@/utils/cookie.js";
+import { Message } from "element-ui";
 
 //设置白名单
 const whiteRouter = ["/login"];
@@ -14,8 +15,13 @@ router.beforeEach((to, from, next) => {
   if (getToKen() && flag) {
     next("/index");
   }
-   //不存在 且不在login页
+  //不存在 且不在login页
   if (!getToKen() && !flag) {
+    Message({
+      type: "warning",
+      message: "请先进行登录",
+      showClose: true,
+    });
     next("/login");
   }
   //不存在 且在login页

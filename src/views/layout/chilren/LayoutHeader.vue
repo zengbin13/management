@@ -15,7 +15,7 @@
 
 <script>
 import SvgIcon from "../../../components/svgIcon/SvgIcon";
-import { getUserName, removeUserName, removeToKen } from "@/utils/cookie.js";
+import { getUserName} from "@/utils/cookie.js";
 
 export default {
   name: "LayoutHeader",
@@ -26,14 +26,13 @@ export default {
     //触发控制侧边栏宽度的函数
     collapseAside() {
       this.$store.commit({
-        type: "SET_COLLAPSE"
+        type: "app/SET_COLLAPSE"
       });
     },
     //退出控制页面
     exitConsole() {
-      //清除cookie
-      removeUserName()
-      removeToKen()
+      //清除token userName
+      this.$store.commit("login/EXIT_LOGIN")
       //跳转到login
       this.$router.push("/login")
       //message提醒
