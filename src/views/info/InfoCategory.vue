@@ -13,7 +13,7 @@
               <div class="button-group">
                 <el-button size="mini" type="danger" round @click.stop="firstItemEdit(index)">编辑</el-button>
                 <el-button size="mini" type="success" round @click.stop="firstItemAddChildren(index)">添加子级</el-button>
-                <el-button size="mini" round @click.stop="firstItemDelete(index)">删除</el-button>
+                <el-button size="mini" round @click.stop="deleteCategory(firstItem.id)">删除</el-button>
               </div>
             </div>
             <ul class="second-item" v-show="firstItem.secondFlag">
@@ -21,7 +21,7 @@
                 {{secondItem.category_name}}
                 <div class="button-group">
                   <el-button size="mini" type="danger" round @click.stop="secondItemEdit(index, indey)">编辑</el-button>
-                  <el-button size="mini" round @click.stop="secondItemDelete(index, indey)">删除</el-button>
+                  <el-button size="mini" round @click.stop="deleteCategory(secondItem.id)">删除</el-button>
                 </div>
               </li>
             </ul>
@@ -103,6 +103,21 @@ export default {
       this.editForm.firstItem = "";
       this.buttonType = "addFirstItem";
     },
+    //添加子级
+    firstItemAddChildren(index) {
+      // 按钮类型 editFirstItem
+      this.buttonType = "addChildren";
+      // 一级分类索引值 和 ID
+      this.currentIndex = index;
+      this.currentId = this.categoryData[index].id;
+      //表单可编辑
+      this.disabled1(true);
+      //获取一级表单内容
+      this.editForm.firstItem = this.categoryData[index].category_name;
+      this.editForm.secondItem = "";
+      //显示二级分类表单
+      this.showSeccategory(true);
+    },
     //点击一级分类编辑按钮
     firstItemEdit(index) {
       // 按钮类型 editFirstItem
@@ -117,25 +132,6 @@ export default {
       //隐藏二级分类表单
       this.showSeccategory(false);
     },
-    //点击一级分类删除按钮
-    firstItemDelete(index) {
-      const id = this.categoryData[index].id;
-      this.deleteCategory(id);
-    },
-    //点击一级分类添加子级
-    firstItemAddChildren(index) {
-      // 按钮类型 editFirstItem
-      this.buttonType = "addChildren";
-      // 一级分类索引值 和 ID
-      this.currentIndex = index;
-      this.currentId = this.categoryData[index].id;
-      //表单可编辑
-      this.disabled1(true);
-      //获取一级表单内容
-      this.editForm.firstItem = this.categoryData[index].category_name;
-      //显示二级分类表单
-      this.showSeccategory(true);
-    },
     //点击二级分类编辑
     secondItemEdit(index, indey) {
       // 按钮类型 editFirstItem
@@ -146,14 +142,35 @@ export default {
       //表单可编辑
       this.disabled1(true);
       //获取二级表单内容
+      this.editForm.firstItem = this.categoryData[index].category_name;
       this.editForm.secondItem = this.categoryData[index].children[indey].category_name;
       //显示二级分类表单
       this.showSeccategory(true);
     },
-    //点击二级删除按钮
-    secondItemDelete(index, indey) {
-      const id = this.categoryData[index].children[indey].id;
-      this.deleteCategory(id);
+    //点击删除按钮
+    deleteCategory(id) {
+      const data = { categoryId: id };
+      this.$confirm("确定删除此消息", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+        center: true
+      })
+        .then(() => {
+          DeleteCategory(data).then(response => {
+            this.$message.success({
+              message: response.data.message,
+              showClose: true
+            });
+            this.getCategoryAll();
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     },
     //重置表单信息
     resetForm() {
@@ -174,7 +191,7 @@ export default {
           id: this.currentId,
           categoryName: this.editForm.firstItem
         };
-        this.editCategory(data);
+        this.editCategory(data, 1);
       }
       //添加二级分类
       if (this.buttonType === "addChildren") {
@@ -190,7 +207,7 @@ export default {
           id: this.currentId,
           categoryName: this.editForm.secondItem
         };
-        this.editCategory(data);
+        this.editCategory(data, 2);
       }
     },
     // api 请求
@@ -221,7 +238,7 @@ export default {
         this.resetForm();
       });
     },
-    editCategory(data) {
+    editCategory(data, item) {
       if (this.editForm.firstItem === "") {
         this.$message.error({
           message: "分类名称不能为空",
@@ -235,17 +252,12 @@ export default {
           showClose: true
         });
         this.getCategoryAll();
-        this.resetForm();
-      });
-    },
-    deleteCategory(id) {
-      const data = { categoryId: id };
-      DeleteCategory(data).then(response => {
-        this.$message.success({
-          message: response.data.message,
-          showClose: true
-        });
-        this.getCategoryAll();
+        if (item === 1) {
+          this.resetForm();
+        }
+        if (item === 2) {
+          this.editForm.secondItem = "";
+        }
       });
     },
     addChildrenCategory(data) {
