@@ -1,5 +1,6 @@
 //0.使用element的消息提示
 import { Message } from "element-ui";
+import {getToKen, getUserName} from '../utils/cookie'
 
 //1.导入axios
 import axios from "axios";
@@ -15,6 +16,9 @@ const service = axios.create({
 service.interceptors.request.use(
   (config) => {
     //请求之前的数据处理
+    // 后台需要前端传相关的参数（在请求头添加参数）
+    config.headers['Tokey'] = getToKen()
+    config.headers['UserName'] = getUserName()
     return config;
   },
   (error) => {

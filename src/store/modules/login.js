@@ -3,11 +3,12 @@ import {
   setToKen,
   setUserName,
   getUserName,
+  getToKen,
   removeUserName,
   removeToKen,
 } from "@/utils/cookie.js";
 const state = {
-  toKen: "",
+  toKen: getToKen() || "",
   userName: getUserName() || "管理员",
 };
 const getters = {};

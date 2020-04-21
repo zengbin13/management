@@ -26,38 +26,61 @@
             </el-select>
           </div>
         </el-col>
-        <el-col :span="3" class="label-wrap input">
+        <el-col :span="4" class="label-wrap input">
           <div class="wrap-content">
             <el-input v-model="formInline.input" placeholder="请输入内容" style="width:100%"></el-input>
           </div>
         </el-col>
-        <el-col :span="2" class="label-wrap search">
-          <el-button type="danger">搜索</el-button>
+        <el-col :span="2" class="label-wrap">
+          <div class="label-wrap button">
+            <div class="wrap-content">
+              <el-button type="danger" style="width:70px">搜索</el-button>
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="2" class="label-wrap pull-right">
+          <div class="label-wrap button">
+            <div class="wrap-content">
+              <el-button type="danger" style="width:70px">新增</el-button>
+            </div>
+          </div>
         </el-col>
       </el-row>
     </el-form>
     <!-- 表格 内容 -->
-    <el-table :data="tableData">
-      <el-table-column type="selection" width="55">></el-table-column>
-      <el-table-column prop="title" label="标题" width="120">
+    <el-table :data="tableData" border style="width: 100%" class="table">
+      <el-table-column type="selection" width="45">
       </el-table-column>
-      <el-table-column prop="type" label="类别" width="120">
+      <el-table-column prop="title" label="标题">
       </el-table-column>
-      <el-table-column prop="date" label="日期">
+      <el-table-column prop="category" label="类别" width="180">
       </el-table-column>
-      <el-table-column prop="manage" label="管理人">
+      <el-table-column prop="date" label="日期" width="220">
       </el-table-column>
-      <el-table-column label="操作">
-        <template>
-          <el-button size="mini">编辑</el-button>
+      <el-table-column prop="user" label="管理人" width="120">
+      </el-table-column>
+      <el-table-column label="操作" width="180">
+        <template slot-scope="">
           <el-button size="mini" type="danger">删除</el-button>
+          <el-button size="mini" type="success">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <!-- 底部分页 -->
+    <el-row class="pagination">
+      <el-col :span="12">
+        <el-button size="mini">批量删除</el-button>
+      </el-col>
+      <el-col :span="12">
+        <el-pagination background layout="prev, pager, next, jumper" :total="100" class="pull-right">
+        </el-pagination>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
+import { GetInfoList } from "../../api/info.js";
 export default {
   name: "Info",
   data() {
@@ -77,9 +100,38 @@ export default {
         { label: "ID", value: "选项一" },
         { label: "标题", value: "选项二" }
       ],
-      tableData: []
+      tableData: [
+        {
+          title: "纽约市长白思豪宣布退出总统竞选 特朗普发推回应",
+          category: "国际信息",
+          date: "2019-09-10 19:31:31",
+          user: "管理员"
+        },
+        {
+          title: "纽约市长白思豪宣布退出总统竞选 特朗普发推回应",
+          category: "国际信息",
+          date: "2019-09-10 19:31:31",
+          user: "管理员"
+        }
+      ]
     };
-  }
+  },
+  methods: {
+    getInfoList() {
+      const data = {
+        pageNumber: 1,
+        pageSize: 10
+      };
+      GetInfoList(data)
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  },
+  mounted() {}
 };
 </script>
 
@@ -97,8 +149,18 @@ export default {
     margin-left: 15px;
     @include label(left, 70);
   }
-  &.search {
-    height: 40px;
+  &.button {
+    @include label(right, 0);
+    button {
+      height: 40px;
+      padding: 0;
+    }
   }
+}
+.table {
+  margin-top: 35px;
+}
+.pagination {
+  margin-top: 35px;
 }
 </style>

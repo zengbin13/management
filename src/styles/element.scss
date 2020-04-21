@@ -10,3 +10,16 @@
   }
 }
 
+.el-table {
+  td,
+  th {
+    text-align: center;
+  }
+  th {
+    color: #344a5f;
+    font-size: 15px;
+  }
+  .el-table-column--selection .cell {
+    padding-right: 10px;
+  }
+}

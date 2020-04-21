@@ -3,34 +3,17 @@
     <div class="container">
       <!-- tab bar 部分 -->
       <div class="tabs">
-        <div
-          class="tab-item"
-          v-for="(item, index) in tabs"
-          :key="index"
-          :class="{ active: currentIndex === index }"
-          @click="toggleIndex(index)"
-        >
+        <div class="tab-item" v-for="(item, index) in tabs" :key="index" :class="{ active: currentIndex === index }" @click="toggleIndex(index)">
           {{ item }}
         </div>
       </div>
       <!-- 表单部分 -->
-      <el-form
-        :model="loginFrom"
-        ref="loginFrom"
-        :rules="rules"
-        status-icon
-        label-position="top"
-      >
+      <el-form :model="loginFrom" ref="loginFrom" :rules="rules" status-icon label-position="top">
         <el-form-item label="邮箱" prop="mail">
           <el-input v-model="loginFrom.mail" placeholder=""></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input
-            type="password"
-            v-model="loginFrom.password"
-            :minlength="6"
-            :maxlength="20"
-          ></el-input>
+          <el-input type="password" v-model="loginFrom.password" :minlength="6" :maxlength="20"></el-input>
         </el-form-item>
         <el-form-item label="重复密码" v-if="isShowPassword2" prop="password2">
           <el-input type="password" v-model="loginFrom.password2"></el-input>
@@ -41,13 +24,7 @@
               <el-input v-model="loginFrom.checkCode"></el-input>
             </el-col>
             <el-col :span="9">
-              <el-button
-                type="success"
-                class="code-button"
-                :disabled="checkCode.disabled"
-                @click="getCheckCode()"
-                >{{ checkCode.text }}</el-button
-              >
+              <el-button type="success" class="code-button" :disabled="checkCode.disabled" @click="getCheckCode()">{{ checkCode.text }}</el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -66,7 +43,7 @@ import {
   stripscript,
   validateMailFormat,
   validatePassFormat,
-  validateCodeFormat,
+  validateCodeFormat
 } from "@/utils/validate";
 import { GetCheckCode, Register, Login } from "@/api/login";
 import sha1 from "js-sha1";
@@ -120,16 +97,16 @@ export default {
         mail: "1762030184@qq.com",
         password: "",
         password2: "",
-        checkCode: "",
+        checkCode: ""
       },
       rules: {
         mail: { validator: validateMail, trigger: "blur" },
         password: { validator: validatePass, trigger: "blur" },
         password2: { validator: validatePass2, trigger: "blur" },
-        checkCode: { validator: validateCode, trigger: "blur" },
+        checkCode: { validator: validateCode, trigger: "blur" }
       },
       checkCode: { disabled: false, text: "获取验证码" },
-      timer: null,
+      timer: null
     };
   },
   computed: {
@@ -138,7 +115,7 @@ export default {
     },
     module_zh() {
       return this.currentIndex === 0 ? "登录" : "注册";
-    },
+    }
   },
   methods: {
     //切换tab状态
@@ -161,7 +138,7 @@ export default {
         this.$message({
           type: "error",
           message: "校验: 邮箱地址不能为空哟",
-          showClose: true,
+          showClose: true
         });
         return;
       }
@@ -169,28 +146,28 @@ export default {
         this.$message({
           type: "error",
           message: "校验: 邮箱地址格式有误",
-          showClose: true,
+          showClose: true
         });
         return;
       }
       let data = {
         username: this.loginFrom.mail,
-        module: this.module,
+        module: this.module
       };
       //请求过程按钮禁用，显示发送中
       this.changeCodeBtnStatus(true, "发送中");
       GetCheckCode(data)
-        .then((response) => {
+        .then(response => {
           //倒计时60秒,按钮禁用
           this.btnCountdown(15);
           //message 获取成功
           this.$message({
             type: "success",
             message: response.data.message,
-            showClose: true,
+            showClose: true
           });
         })
-        .catch((error) => {
+        .catch(error => {
           this.checkCode = { disabled: false, text: "获取验证码" };
           console.log(error);
         });
@@ -219,11 +196,11 @@ export default {
     },
     //提交表单
     submitForm() {
-      this.$refs.loginFrom.validate((valid) => {
+      this.$refs.loginFrom.validate(valid => {
         let data = {
           username: this.loginFrom.mail,
           password: sha1(this.loginFrom.password),
-          code: this.loginFrom.checkCode,
+          code: this.loginFrom.checkCode
         };
         if (valid && this.module === "login") {
           this.login(data);
@@ -238,48 +215,48 @@ export default {
     login(data) {
       this.$store
         .dispatch("login/login", data)
-        .then((response) => {
-          let userName = this.$store.state.login.userName
+        .then(response => {
+          let userName = this.$store.state.login.userName;
           this.$message({
             type: "success",
             message: `欢迎用户${userName}登录`,
-            showClose: true,
+            showClose: true
           });
           this.$router.push({ path: "/index" });
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error);
         });
     },
     //请求register数据
     register(data) {
       Register(data)
-        .then((response) => {
+        .then(response => {
           this.$message({
             type: "success",
             message: response.data.message,
-            showClose: true,
+            showClose: true
           });
           this.toggleIndex(0);
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error);
         });
-    },
+    }
   },
-  mounted() {},
+  mounted() {}
 };
 </script>
 
 <style lang="scss">
 .login {
   background-color: $bgColor;
-  height: 100vh;
+  min-height: 100vh;
   .container {
     position: relative;
-    top: 20%;
-    width: 330px;
+    top: 20vh;
     margin: 0 auto;
+    width: 330px;
   }
 }
 .tabs {
