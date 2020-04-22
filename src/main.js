@@ -19,10 +19,13 @@ Vue.use(ElementUI);
 //svg-icon组件
 import "./icons/index";
 
+// 全局方法
+import global from "./utils/global";
+Vue.use(global)
+
 //功能插件
 // import "./utils/setRem";
 import "./router/permit";
-
 
 new Vue({
   router,

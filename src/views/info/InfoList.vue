@@ -7,7 +7,7 @@
           <label for="">类型:</label>
           <div class="wrap-content">
             <el-select v-model="formInline.selectedType" placeholder="请选择" style="width:100%">
-              <el-option v-for="(item, index) in typeOptions" :key="index" :label="item.label" :value="item.value"></el-option>
+              <el-option v-for="(item, index) in typeOptions" :key="index" :label="item.category_name" :value="item.id"></el-option>
             </el-select>
           </div>
         </el-col>
@@ -41,7 +41,7 @@
         <el-col :span="2" class="label-wrap pull-right">
           <div class="label-wrap button">
             <div class="wrap-content">
-              <el-button type="danger" style="width:70px">新增</el-button>
+              <el-button type="danger" style="width:70px" @click="handleAddInfo()">新增</el-button>
             </div>
           </div>
         </el-col>
@@ -61,7 +61,7 @@
       </el-table-column>
       <el-table-column label="操作" width="180">
         <template slot-scope="">
-          <el-button size="mini" type="danger">删除</el-button>
+          <el-button size="mini" type="danger" @click="deleteItem()">删除</el-button>
           <el-button size="mini" type="success">编辑</el-button>
         </template>
       </el-table-column>
@@ -69,20 +69,26 @@
     <!-- 底部分页 -->
     <el-row class="pagination">
       <el-col :span="12">
-        <el-button size="mini">批量删除</el-button>
+        <el-button size="mini" @click="deleteItems()">批量删除</el-button>
       </el-col>
       <el-col :span="12">
         <el-pagination background layout="prev, pager, next, jumper" :total="100" class="pull-right">
         </el-pagination>
       </el-col>
     </el-row>
+    <!-- dialog -->
+    <add-dialog :addDialog.sync="addDialog" :type-options="typeOptions"></add-dialog>
   </div>
 </template>
 
 <script>
-import { GetInfoList } from "../../api/info.js";
+import { GetInfoList, AddInfo, EditInfo, DeleteInfo, GetCategoryAll } from "../../api/info.js";
+import AddDialog from "./component/dialog/AddDialog";
 export default {
   name: "Info",
+  components: {
+    AddDialog
+  },
   data() {
     return {
       formInline: {
@@ -91,16 +97,20 @@ export default {
         date: [],
         input: ""
       },
-      typeOptions: [
-        { label: "国际信息", value: "选项一" },
-        { label: "国内信息", value: "选项二" },
-        { label: "行业信息", value: "选项三" }
-      ],
+      typeOptions: [],
       keywordOptions: [
         { label: "ID", value: "选项一" },
         { label: "标题", value: "选项二" }
       ],
       tableData: [
+        {
+          id: "7338",
+          title: "xxx",
+          categoryId: "3993",
+          createDate: "1587507833",
+          content: "xxxxxxxx",
+          imgUrl: null
+        },
         {
           title: "纽约市长白思豪宣布退出总统竞选 特朗普发推回应",
           category: "国际信息",
@@ -113,10 +123,36 @@ export default {
           date: "2019-09-10 19:31:31",
           user: "管理员"
         }
-      ]
+      ],
+      total: 0,
+      addDialog: false
     };
   },
   methods: {
+    handleAddInfo() {
+      this.addDialog = !this.addDialog;
+    },
+    deleteItem() {
+      this.confirm({
+        desc: "删除该条信息, 是否继续?"
+      });
+    },
+    deleteItems() {
+      this.confirm({
+        desc: "此操作将永久删除选中信息, 是否继续?",
+        tip: "警告",
+        success: this.confirmDelete
+      });
+    },
+    confirmDelete() {
+      console.log("确定删除");
+    },
+    // api 请求
+    getCategoryAll() {
+      GetCategoryAll().then(response => {
+        this.typeOptions = response.data.data;
+      });
+    },
     getInfoList() {
       const data = {
         pageNumber: 1,
@@ -124,14 +160,20 @@ export default {
       };
       GetInfoList(data)
         .then(response => {
-          console.log(response);
+          console.log(response.data.data);
+          this.tableData = response.data.data.data;
+          this.total = response.data.data.total;
         })
         .catch(error => {
           console.log(error);
         });
     }
+    //
   },
-  mounted() {}
+  mounted() {
+    this.getInfoList();
+    this.getCategoryAll();
+  }
 };
 </script>
 

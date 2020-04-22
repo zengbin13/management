@@ -9,6 +9,32 @@ export function GetInfoList(data) {
   });
 }
 
+// 接口名称：添加信息
+export function AddInfo(data) {
+  return service.request({
+    url: "/news/add/",
+    method: "POST",
+    data,
+  });
+}
+
+// 接口名称：修改信息
+export function EditInfo(data) {
+  return service.request({
+    url: "/news/editInfo/",
+    method: "POST",
+    data,
+  });
+}
+// 接口名称：删除信息
+export function DeleteInfo(data) {
+  return service.request({
+    url: "/news/deleteInfo/",
+    method: "POST",
+    data,
+  });
+}
+
 // 接口名称：获取信息分类
 export function GetCategoryAll() {
   return service.request({
@@ -22,7 +48,7 @@ export function AddFirstCategory(data) {
   return service.request({
     url: "/news/addFirstCategory/",
     method: "POST",
-    data
+    data,
   });
 }
 
@@ -31,7 +57,7 @@ export function AddChildrenCategory(data) {
   return service.request({
     url: "/news/addChildrenCategory/",
     method: "POST",
-    data
+    data,
   });
 }
 
@@ -40,15 +66,15 @@ export function DeleteCategory(data) {
   return service.request({
     url: "/news/deleteCategory/",
     method: "POST",
-    data
+    data,
   });
 }
 
-// 接口名称：修改信息分类 
+// 接口名称：修改信息分类
 export function EditCategory(data) {
   return service.request({
     url: "/news/editCategory/",
     method: "POST",
-    data
+    data,
   });
 }
