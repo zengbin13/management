@@ -15,9 +15,11 @@
             <svg-icon :icon-class="submenu.meta.icon" class="icon"></svg-icon>
             <span>{{submenu.meta.name}}</span>
           </template>
-          <el-menu-item v-for="(item, index) in submenu.children" :key="index" :index="item.path">
-            {{item.meta.name}}
-          </el-menu-item>
+          <template v-for="(item, index) in submenu.children">
+            <el-menu-item :key="index" :index="item.path" v-if="!item.hidden">
+              {{item.meta.name}}
+            </el-menu-item>
+          </template>
         </el-submenu>
       </template>
     </el-menu>

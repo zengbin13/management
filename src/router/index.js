@@ -19,7 +19,7 @@ const routes = [
     component: () => import("../views/layout/Layout.vue"),
     meta: {
       icon: "console",
-      name: "控制台"
+      name: "控制台",
     },
     children: [
       {
@@ -27,7 +27,7 @@ const routes = [
         name: "Index",
         component: () => import("../views/console/Console.vue"),
         meta: {
-          name: "主页"
+          name: "主页",
         },
       },
     ],
@@ -39,7 +39,7 @@ const routes = [
     component: () => import("../views/layout/Layout.vue"),
     meta: {
       icon: "info",
-      name: "信息管理"
+      name: "信息管理",
     },
     children: [
       {
@@ -47,7 +47,7 @@ const routes = [
         name: "InfoList",
         component: () => import("../views/info/InfoList.vue"),
         meta: {
-          name: "信息列表"
+          name: "信息列表",
         },
       },
       {
@@ -55,7 +55,16 @@ const routes = [
         name: "InfoCategory",
         component: () => import("../views/info/InfoCategory.vue"),
         meta: {
-          name: "信息分类"
+          name: "信息分类",
+        },
+      },
+      {
+        path: "/info/detail",
+        name: "InfoDetail",
+        component: () => import("../views/info/InfoDetail.vue"),
+        hidden: true,
+        meta: {
+          name: "信息详情",
         },
       },
     ],
@@ -66,7 +75,7 @@ const routes = [
     component: () => import("../views/layout/Layout.vue"),
     meta: {
       icon: "user",
-      name: "用户管理"
+      name: "用户管理",
     },
     children: [
       {
@@ -74,7 +83,7 @@ const routes = [
         name: "User",
         component: () => import("../views/user/User.vue"),
         meta: {
-          name: "用户"
+          name: "用户",
         },
       },
     ],
