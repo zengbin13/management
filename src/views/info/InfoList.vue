@@ -14,7 +14,7 @@
         <el-col :span="7" class="label-wrap selecte-date">
           <label for="">日期:</label>
           <div class="wrap-content">
-            <el-date-picker v-model="formInline.date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" style="width:100%">
+            <el-date-picker v-model="formInline.date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss" style="width:100%">
             </el-date-picker>
           </div>
         </el-col>
@@ -34,7 +34,7 @@
         <el-col :span="2" class="label-wrap">
           <div class="label-wrap button">
             <div class="wrap-content">
-              <el-button type="danger" style="width:70px">搜索</el-button>
+              <el-button type="danger" style="width:70px" @click="search()">搜索</el-button>
             </div>
           </div>
         </el-col>
@@ -48,21 +48,21 @@
       </el-row>
     </el-form>
     <!-- 表格 内容 -->
-    <el-table :data="tableData" border style="width: 100%" class="table">
+    <el-table :data="tableData" border style="width: 100%" class="table" v-loading="tableLoading" height="450" @selection-change="handleSelection">
       <el-table-column type="selection" width="45">
       </el-table-column>
       <el-table-column prop="title" label="标题">
       </el-table-column>
-      <el-table-column prop="category" label="类别" width="180">
+      <el-table-column prop="categoryId" label="类别" width="180" :formatter="toCategoryId">
       </el-table-column>
-      <el-table-column prop="date" label="日期" width="220">
+      <el-table-column prop="createDate" label="日期" width="220" :formatter="toDate">
       </el-table-column>
       <el-table-column prop="user" label="管理人" width="120">
       </el-table-column>
       <el-table-column label="操作" width="180">
-        <template slot-scope="">
-          <el-button size="mini" type="danger" @click="deleteItem()">删除</el-button>
-          <el-button size="mini" type="success">编辑</el-button>
+        <template slot-scope="scope">
+          <el-button size="mini" type="danger" @click="deleteItem(scope.row)">删除</el-button>
+          <el-button size="mini" type="success" @click="handleEdit(scope.row)">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -72,22 +72,26 @@
         <el-button size="mini" @click="deleteItems()">批量删除</el-button>
       </el-col>
       <el-col :span="12">
-        <el-pagination background layout="prev, pager, next, jumper" :total="100" class="pull-right">
+        <el-pagination background layout="total,prev, pager, next, jumper" :total="total" class="pull-right" @prev-click="handlePrev()" @current-change="handleCurrentChange" @next-click="handleNext()">
         </el-pagination>
       </el-col>
     </el-row>
     <!-- dialog -->
-    <add-dialog :addDialog.sync="addDialog" :type-options="typeOptions"></add-dialog>
+    <info-dialog :addDialog.sync="addDialog" :type-options="typeOptions" @get-info-list="getInfoList()" :title="'新增'">
+    </info-dialog>
+    <info-dialog :addDialog.sync="editDailog" :type-options="typeOptions" :edit-dailog-data="editDailogData" @get-info-list="getInfoList()">
+    </info-dialog>
   </div>
 </template>
 
 <script>
 import { GetInfoList, AddInfo, EditInfo, DeleteInfo, GetCategoryAll } from "../../api/info.js";
-import AddDialog from "./component/dialog/AddDialog";
+import InfoDialog from "./component/dialog/InfoDialog";
+import { timeFormat } from "../../utils/timeFormat.js";
 export default {
   name: "Info",
   components: {
-    AddDialog
+    InfoDialog
   },
   data() {
     return {
@@ -99,53 +103,121 @@ export default {
       },
       typeOptions: [],
       keywordOptions: [
-        { label: "ID", value: "选项一" },
-        { label: "标题", value: "选项二" }
+        { label: "ID", value: "ID" },
+        { label: "标题", value: "标题" }
       ],
-      tableData: [
-        {
-          id: "7338",
-          title: "xxx",
-          categoryId: "3993",
-          createDate: "1587507833",
-          content: "xxxxxxxx",
-          imgUrl: null
-        },
-        {
-          title: "纽约市长白思豪宣布退出总统竞选 特朗普发推回应",
-          category: "国际信息",
-          date: "2019-09-10 19:31:31",
-          user: "管理员"
-        },
-        {
-          title: "纽约市长白思豪宣布退出总统竞选 特朗普发推回应",
-          category: "国际信息",
-          date: "2019-09-10 19:31:31",
-          user: "管理员"
-        }
-      ],
+      addDialog: false,
+      tableData: [],
       total: 0,
-      addDialog: false
+      requestInfoList: {
+        categoryId: "",
+        startTiem: "",
+        endTime: "",
+        title: "",
+        id: "",
+        pageNumber: 1,
+        pageSize: 10
+      },
+      tableLoading: false,
+      editDailog: false,
+      editDailogData: {
+        type: "",
+        title: "",
+        content: ""
+      },
+      selectedInfo: []
     };
   },
   methods: {
+    // 点击新增数据
     handleAddInfo() {
       this.addDialog = !this.addDialog;
     },
-    deleteItem() {
+    // 点击编辑数据
+    handleEdit(row) {
+      this.editDailogData = {
+        id: row.id,
+        type: this.toCategoryId(row),
+        typeId: row.categoryId,
+        title: row.title,
+        content: row.content
+      };
+      this.editDailog = !this.editDailog;
+    },
+    // 点击删除数据
+    deleteItem(row) {
       this.confirm({
-        desc: "删除该条信息, 是否继续?"
+        desc: "删除该条信息, 是否继续?",
+        success: this.deleteInfo,
+        successData: { id: [row.id] }
       });
     },
+    // 点击批量删除
     deleteItems() {
+      if (this.selectedInfo.length === 0) {
+        this.$message.warning({
+          message: "请选择需要删除的数据",
+          showClose: true
+        });
+        return;
+      }
       this.confirm({
         desc: "此操作将永久删除选中信息, 是否继续?",
         tip: "警告",
-        success: this.confirmDelete
+        success: this.deleteInfo,
+        successData: { id: this.selectedInfo }
       });
     },
-    confirmDelete() {
-      console.log("确定删除");
+    // 点击前一页
+    handlePrev() {
+      this.requestInfoList.pageNumber--;
+      this.getInfoList();
+    },
+    // 点击后一页
+    handleNext() {
+      this.requestInfoList.pageNumber++;
+      this.getInfoList();
+    },
+    // 选择数据
+    handleCurrentChange(value) {
+      this.requestInfoList.pageNumber = value;
+      this.getInfoList();
+    },
+    // 格式化类别
+    toCategoryId(cellValue) {
+      const type = this.typeOptions.find(item => {
+        return cellValue.categoryId == item.id;
+      });
+      return type === undefined ? "未分类" : type.category_name;
+    },
+    // 格式化日期
+    toDate(cellValue) {
+      return timeFormat(cellValue.createDate);
+    },
+    handleSelection(value) {
+      this.selectedInfo = value.map(item => {
+        return item.id;
+      });
+    },
+    // 点击搜索
+    search() {
+      //根据ID检索
+      if (this.formInline.selectedKeyword === "ID") {
+        this.requestInfoList.title = "";
+        this.requestInfoList.id = this.formInline.input;
+      }
+      //根据标题检索
+      if (this.formInline.selectedKeyword === "标题") {
+        this.requestInfoList.title = this.formInline.input;
+        this.requestInfoList.id = "";
+      }
+      //类别
+      this.requestInfoList.categoryId = this.formInline.selectedType;
+      //日期
+      this.requestInfoList.startTiem = this.formInline.date[0];
+      this.requestInfoList.endTime = this.formInline.date[1];
+      //发送请求
+      this.getInfoList();
     },
     // api 请求
     getCategoryAll() {
@@ -154,21 +226,25 @@ export default {
       });
     },
     getInfoList() {
-      const data = {
-        pageNumber: 1,
-        pageSize: 10
-      };
-      GetInfoList(data)
+      this.tableLoading = true;
+      GetInfoList(this.requestInfoList)
         .then(response => {
-          console.log(response.data.data);
-          this.tableData = response.data.data.data;
           this.total = response.data.data.total;
+          this.tableData = response.data.data.data;
+          this.tableLoading = false;
         })
         .catch(error => {
+          this.tableLoading = false;
           console.log(error);
         });
+    },
+    deleteInfo(data) {
+      this.tableLoading = true;
+      DeleteInfo(data).then(response => {
+        this.getInfoList();
+        this.tableLoading = false;
+      });
     }
-    //
   },
   mounted() {
     this.getInfoList();
@@ -200,8 +276,10 @@ export default {
   }
 }
 .table {
+  // height: 450px;
   margin-top: 35px;
 }
+
 .pagination {
   margin-top: 35px;
 }

@@ -11,7 +11,7 @@ export default {
         center: true,
       })
         .then(() => {
-          params.success && params.success(params.id);
+          params.success && params.success(params.successData);
           this.$message.success({
             type: "success",
             message: "删除成功",

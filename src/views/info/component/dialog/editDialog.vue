@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="新增" :visible.sync="add_flag" class="add-dialog" @close="closeDialog()" width="580px">
+  <el-dialog title="修改" :visible.sync="add_flag" class="add-dialog" @close="closeDialog()" width="580px">
     <el-form :model="dialogForm" label-width="50px" ref="dialogForm">
       <el-form-item label="类别 :">
         <el-select v-model="dialogForm.type" placeholder="请选择">
@@ -10,7 +10,7 @@
         <el-input v-model="dialogForm.title" placeholder="请输入内容"></el-input>
       </el-form-item>
       <el-form-item label="概况 :">
-        <el-input type="textarea" :rows="4" placeholder="请至少输入两个字符" v-model="dialogForm.content" maxlength="200" minlength="2" show-word-limit>
+        <el-input type="textarea" :rows="8" placeholder="请至少输入两个字符" v-model="dialogForm.content" maxlength="1000" minlength="2" show-word-limit>
         </el-input>
       </el-form-item>
     </el-form>
@@ -82,6 +82,7 @@ export default {
         content: this.dialogForm.content
       };
       this.addInfo(data);
+      this.$emit("get-info-list")
     },
     //api
     addInfo(data) {
