@@ -131,7 +131,6 @@ export default {
       };
       EditInfo(data).then(response => {
         this.add_flag = false;
-        console.log(response);
       });
     }
   }

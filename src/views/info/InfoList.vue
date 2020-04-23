@@ -48,7 +48,7 @@
       </el-row>
     </el-form>
     <!-- 表格 内容 -->
-    <el-table :data="tableData" border style="width: 100%" class="table" v-loading="tableLoading" height="450" @selection-change="handleSelection">
+    <el-table :data="tableData" border style="width: 100%" class="table" v-loading="tableLoading" @selection-change="handleSelection">
       <el-table-column type="selection" width="45">
       </el-table-column>
       <el-table-column prop="title" label="标题">
