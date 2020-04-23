@@ -136,7 +136,6 @@ export default {
   }
 };
 </script>
-
 <style lang="scss" scoped>
 .el-form {
   margin: 0 30px;
