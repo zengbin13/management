@@ -138,8 +138,7 @@ export default {
     handleEdit(row) {
       this.editDailogData = {
         id: row.id,
-        type: this.toCategoryId(row),
-        typeId: row.categoryId,
+        type: row.categoryId,
         title: row.title,
         content: row.content
       };
@@ -147,7 +146,6 @@ export default {
     },
     // 点击详情
     handleDetail(row) {
-      console.log(row);
       this.$router.push({ name: "InfoDetail", query: { id: row.id, titie: row.title } });
     },
     // 点击删除数据
@@ -227,8 +225,8 @@ export default {
     },
     // api 请求
     getCategoryAll() {
-      GetCategoryAll().then(response => {
-        this.typeOptions = response.data.data;
+      this.$store.dispatch("info/getCategoryAll").then(response => {
+        this.typeOptions = response;
       });
     },
     getInfoList() {
