@@ -212,14 +212,14 @@ export default {
     },
     // api 请求
     getCategoryAll() {
-      GetCategoryAll().then(response => {
-        //如果在实例创建之后添加新的属性到实例上，它不会触发视图更新
-        response.data.data.forEach(item => {
-          item.secondFlag = true;
-          item.iconName = "subtract";
+      this.$store
+        .dispatch("info/getCategoryAll")
+        .then(response => {
+          this.categoryData = response;
+        })
+        .catch(error => {
+          console.log(error);
         });
-        this.categoryData = response.data.data;
-      });
     },
     addFirstCategory(data) {
       if (this.editForm.firstItem === "") {

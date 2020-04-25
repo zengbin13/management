@@ -3,7 +3,7 @@ export function timeFormat(timer) {
   let YY = time.getFullYear();
   let MM =
     time.getMonth() + 1 < 10 ? `0${time.getMonth() + 1}` : time.getMonth() + 1;
-  let DD = time.getDay() < 10 ? "0" + time.getDay() : time.getDay();
+  let DD = time.getDate() < 10 ? "0" + time.getDate() : time.getDate();
 
   let hh = time.getHours() < 10 ? "0" + time.getHours() : time.getHours();
   let mm = time.getMinutes() < 10 ? "0" + time.getMinutes() : time.getMinutes();

@@ -64,9 +64,12 @@ export default {
       this.add_flag = value;
     },
     editDailogData: function(value) {
-      this.dialogForm.type = value.type;
-      this.dialogForm.title = value.title;
-      this.dialogForm.content = value.content;
+      for (const key in this.dialogForm) {
+        this.dialogForm[key] = value[key]
+      }
+      // this.dialogForm.type = value.type;
+      // this.dialogForm.title = value.title;
+      // this.dialogForm.content = value.content;
     }
   },
   methods: {
