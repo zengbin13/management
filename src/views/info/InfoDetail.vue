@@ -20,21 +20,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item label="缩略图 :">
-        <el-upload
-          class="avatar-uploader"
-          :action="uploadImgConfig.action"
-          :show-file-list="false"
-          :on-success="handleAvatarSuccess"
-          :before-upload="beforeAvatarUpload"
-          :data="uploadKey"
-        >
-          <img
-            v-if="detailForm.imgUrl"
-            :src="detailForm.imgUrl"
-            class="avatar"
-          />
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
+        <upload-img :imgUrl.sync="detailForm.imgUrl"></upload-img>
       </el-form-item>
       <el-form-item label="发布日期 :">
         <el-date-picker
@@ -61,6 +47,7 @@
 import { GetCategoryAll, GetInfoList, EditInfo } from "../../api/info";
 import { UploadImgToken } from "../../api/common.js";
 import { timeFormat } from "../../utils/timeFormat.js";
+import UploadImg from '../../components/uploadImg/UploadImg'
 //富文本编辑器
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
@@ -81,21 +68,11 @@ export default {
       routeData: {},
       detailInfo: {},
       submitLoading: false,
-      // 图片上传配置
-      uploadImgConfig: {
-        action: "http://up-z2.qiniup.com",
-        accesskey: "Avh-EZZAa4TxqPQZsEW42fXBUbTMFi-RKSZTRKJj",
-        secretkey: "l9AXtnhCVkZexXNRcmHXzmecXiCUiLynwGboMeUw",
-        buckety: "webjshtml",
-      },
-      uploadKey: {
-        token: "",
-        key: "",
-      },
     };
   },
   components: {
     quillEditor,
+    UploadImg
   },
   computed: {
     categoryData() {
@@ -103,26 +80,6 @@ export default {
     },
   },
   methods: {
-    handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
-      //将保存图片的地址
-      //http://www-web-jshtml-cn-idva7mx.web-jshtml.cn/
-      this.detailForm.imgUrl = `http://www-web-jshtml-cn-idva7mx.web-jshtml.cn/${res.key}`;
-    },
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isJPG) {
-        this.$message.error("上传头像图片只能是 JPG 格式!");
-      }
-      if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
-      }
-      //文件名转码
-      let key = encodeURI(`${file.name}`);
-      this.uploadKey.key = key;
-      return isJPG && isLt2M;
-    },
     //api
     editInfo() {
       const data = this.detailForm;
@@ -156,19 +113,11 @@ export default {
         this.detailForm.createDate = timeFormat(this.detailInfo.createDate);
       });
     },
-    //获取七牛云token
-    uploadImgToken() {
-      // 图片上传配置
-      UploadImgToken(this.uploadImgConfig).then((response) => {
-        this.uploadKey.token = response.data.data.token;
-      });
-    },
   },
   mounted() {
     this.getRouteData();
     this.getCategoryData();
     this.getInfoList();
-    this.uploadImgToken();
   },
 };
 </script>
