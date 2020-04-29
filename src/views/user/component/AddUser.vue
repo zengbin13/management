@@ -3,10 +3,7 @@
     <el-dialog title="新增" :visible.sync="flag" width="40%" @close="cancel()">
       <el-form :model="addForm" ref="addForm" label-width="80px">
         <el-form-item label="用户名 :">
-          <el-input
-            v-model="addForm.userName"
-            placeholder="请输入内容"
-          ></el-input>
+          <el-input v-model="addForm.userName" placeholder="请输入内容"></el-input>
         </el-form-item>
         <el-form-item label="姓名 :">
           <el-input v-model="addForm.name" placeholder="请输入内容"></el-input>
@@ -15,41 +12,7 @@
           <el-input v-model="addForm.phone" placeholder="请输入内容"></el-input>
         </el-form-item>
         <el-form-item label="地区 :">
-          <el-row>
-            <el-col :span="7">
-              <el-select v-model="addForm.area" placeholder="请选择" style="">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
-                </el-option>
-              </el-select>
-            </el-col>
-            <el-col :span="7">
-              <el-select v-model="addForm.area" placeholder="请选择">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
-                </el-option>
-              </el-select>
-            </el-col>
-            <el-col :span="7">
-              <el-select v-model="addForm.area" placeholder="请选择">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
-                </el-option>
-              </el-select>
-            </el-col>
-          </el-row>
+          <city-picker></city-picker>
         </el-form-item>
         <el-form-item label="是否启用 :">
           <el-radio v-model="addForm.enable" label="0">禁用</el-radio>
@@ -57,11 +20,7 @@
         </el-form-item>
         <el-form-item label="角色 :">
           <el-checkbox-group v-model="addForm.roles">
-            <el-checkbox
-              v-for="item in roles"
-              :key="item.key"
-              :label="item.label"
-            ></el-checkbox>
+            <el-checkbox v-for="item in roles" :key="item.key" :label="item.label"></el-checkbox>
           </el-checkbox-group>
         </el-form-item>
       </el-form>
@@ -75,13 +34,17 @@
 </template>
 
 <script>
+import CityPicker from "@/components/cityPicker/CityPicker";
 export default {
   name: "AddUser",
+  components: {
+    CityPicker
+  },
   props: {
     addUserDialog: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   data() {
     return {
@@ -92,20 +55,16 @@ export default {
         phone: "",
         area: "",
         enable: 0,
-        roles: [],
+        roles: []
       },
       options: [{ label: "地方", value: "1" }],
-      roles: [
-        { label: "系统管理员" },
-        { label: "信息管理员" },
-        { label: "用户管理员" },
-      ],
+      roles: [{ label: "系统管理员" }, { label: "信息管理员" }, { label: "用户管理员" }]
     };
   },
   watch: {
     addUserDialog(value) {
       this.flag = value;
-    },
+    }
   },
   methods: {
     cancel() {
@@ -113,8 +72,8 @@ export default {
     },
     submit() {
       this.$emit("update:addUserDialog", false);
-    },
-  },
+    }
+  }
 };
 </script>
 

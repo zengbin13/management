@@ -19,9 +19,19 @@
       </el-form-item>
     </el-form>
     <!-- 表格 -->
-    <base-table :tableData="tableData" :table-config="tableConfig"></base-table>
+    <base-table :tableData="tableData" :table-config="tableConfig">
+      <template v-slot:status="props">
+        <el-switch v-model="props.data.status" active-color="#13ce66" inactive-color="#ff4949">
+        </el-switch>
+      </template>
+      <template v-slot:operation>
+        <el-button size="mini">编辑</el-button>
+        <el-button size="mini" type="danger">删除</el-button>
+      </template>
+    </base-table>
     <!-- 对话框 -->
-    <add-user :add-user-dialog.sync="addUserDialog"></add-user>
+    <add-user :add-user-dialog.sync="addUserDialog">
+    </add-user>
   </div>
 </template>
 
@@ -47,18 +57,47 @@ export default {
       ],
       addUserDialog: false,
       tableData: [
-        { userName: "1234", trueName: "234", phone: "1234567", region: "重庆", role: "管理员" },
-        { userName: "1234", trueName: "234", phone: "1234567", region: "重庆", role: "管理员" },
-        { userName: "1234", trueName: "234", phone: "1234567", region: "重庆", role: "管理员" }
+        {
+          userName: "1234",
+          trueName: "234",
+          phone: "1234567",
+          region: "重庆",
+          role: "管理员",
+          status: false
+        },
+        {
+          userName: "1234",
+          trueName: "234",
+          phone: "1234567",
+          region: "重庆",
+          role: "管理员",
+          status: false
+        },
+        {
+          userName: "1234",
+          trueName: "234",
+          phone: "1234567",
+          region: "重庆",
+          role: "管理员",
+          status: false
+        }
       ],
       tableConfig: {
         selection: true,
         theadData: [
           { label: "用户名", field: "userName" },
-          { label: "真实姓名", field: "trueName" },
-          { label: "手机号", field: "phone" },
-          { label: "地区", field: "region" },
-          { label: "角色", field: "role" }
+          { label: "真实姓名", field: "trueName", width: "120" },
+          { label: "手机号", field: "phone", width: "200" },
+          { label: "地区", field: "region", width: "120" },
+          { label: "角色", field: "role", width: "120" },
+          {
+            label: "禁启用状态",
+            field: "status",
+            width: "120",
+            columnType: "slot",
+            slotName: "status"
+          },
+          { label: "操作", field: "operation", columnType: "slot", slotName: "operation" }
         ]
       }
     };
@@ -66,6 +105,15 @@ export default {
   methods: {
     handleAddUser() {
       this.addUserDialog = !this.addUserDialog;
+    },
+    // api
+    //获取table的数据
+    getInfoList() {
+      GetInfoList(this.requestInfoList).then(response => {
+        this.total = response.data.data.total;
+        this.tableData = response.data.data.data;
+        this.tableLoading = false;
+      });
     }
   }
 };
