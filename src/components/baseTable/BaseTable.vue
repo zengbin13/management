@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-table :data="tableData" border stripe>
+    <el-table :data="tableData" border stripe @selection-change="handleChange">
       <!-- 多选 -->
       <el-table-column v-if="tableConfig.selection" type="selection" width="55"></el-table-column>
       <template v-for="item in tableConfig.theadData">
@@ -11,12 +11,15 @@
           </template>
         </el-table-column>
         <!--文本数据渲染-->
-        <el-table-column :prop="item.field" :key="item.label" :label="item.label" :width="item.width" v-else>
+        <el-table-column :prop="item.field " :key="item.label" :label="item.label" :width="item.width" v-else>
         </el-table-column>
       </template>
     </el-table>
-    <el-pagination background layout="prev, pager, next" :total="1000">
-    </el-pagination>
+    <div class="footer clearfix">
+      <slot name="delete"></slot>
+      <el-pagination background layout="prev, pager, next" :total="tableConfig.total" class="pull-right">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -25,15 +28,17 @@ import { LoadTableData } from "../../api/common.js";
 export default {
   name: "base-table",
   props: {
+    tableData: {
+      type: Array,
+      default: () => []
+    },
     tableConfig: {
       type: Object,
       default: () => {}
     }
   },
   data() {
-    return {
-      tableData: []
-    };
+    return {};
   },
   methods: {
     loadTableData() {
@@ -44,9 +49,11 @@ export default {
       LoadTableData(requestData).then(response => {
         console.log(response);
       });
+    },
+    handleChange(data) {
+      this.$emit("selection-change", data);
     }
-  },
-  mounted() {}
+  }
 };
 </script>
 
@@ -54,8 +61,7 @@ export default {
 .el-table {
   margin-top: 30px;
 }
-.el-pagination {
+.footer {
   margin-top: 30px;
-  float: right;
 }
 </style>

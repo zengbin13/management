@@ -1,6 +1,6 @@
 //0.使用element的消息提示
 import { Message } from "element-ui";
-import {getToKen, getUserName} from '../utils/cookie'
+import { getToKen, getUserName } from "../utils/cookie";
 
 //1.导入axios
 import axios from "axios";
@@ -10,6 +10,7 @@ const BASEURL = process.env.NODE_ENV === "production" ? "" : "/api";
 const service = axios.create({
   baseURL: BASEURL,
   timeout: 5000,
+  headers: { Accept: "application/json" },
 });
 
 //3.添加请求和响应拦截器
@@ -17,8 +18,8 @@ service.interceptors.request.use(
   (config) => {
     //请求之前的数据处理
     // 后台需要前端传相关的参数（在请求头添加参数）
-    config.headers['Tokey'] = getToKen()
-    config.headers['UserName'] = getUserName()
+    config.headers["Tokey"] = getToKen();
+    config.headers["UserName"] = getUserName();
     return config;
   },
   (error) => {

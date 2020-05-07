@@ -13,7 +13,7 @@
       </el-select>
     </el-col>
     <el-col :span="8">
-      <el-select placeholder="请选择" v-model="area">
+      <el-select placeholder="请选择" v-model="area" @change="handleArea">
         <el-option v-for="item in areaOptions" :key="item.AREA_CODE" :label="item.AREA_NAME" :value="item.AREA_CODE">
         </el-option>
       </el-select>
@@ -58,6 +58,14 @@ export default {
       GetCityNames({ type: "area", city_code: this.city }).then(response => {
         this.areaOptions = response.data.data.data;
       });
+    },
+    handleArea() {
+      const region = {
+        province: this.province,
+        city: this.city,
+        area: this.area
+      };
+      this.$emit("region-data", region);
     }
   },
   mounted() {
