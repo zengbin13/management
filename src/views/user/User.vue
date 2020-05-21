@@ -21,7 +21,7 @@
     <!-- 表格 -->
     <base-table :tableData="tableData " :table-config="tableConfig" @selection-change="handleChange" v-loading="loading">
       <template v-slot:status="props">
-        <el-switch v-model="props.data.status" active-color="#13ce66" inactive-color="#ff4949" active-value="1" inactive-value="0">
+        <el-switch v-model="props.data.status" active-color="#13ce66" inactive-color="#ff4949" active-value="2" inactive-value="1" @change="userActives(props.data.id, $event)">
         </el-switch>
       </template>
       <template v-slot:operation="props">
@@ -42,7 +42,7 @@
 
 <script>
 import AddUser from "./component/AddUser";
-import { GetList, UserDel } from "../../api/user.js";
+import { GetList, UserDel, UserActives } from "../../api/user.js";
 import BaseTable from "../../components/baseTable/BaseTable";
 export default {
   name: "User",
@@ -107,9 +107,9 @@ export default {
         password: "",
         truename: "",
         phone: "",
-        region: "",
+        region: {},
         status: "",
-        role: ""
+        role: []
       };
       this.handleAddUser();
     },
@@ -166,6 +166,18 @@ export default {
         console.log(response);
       });
       this.getList();
+    },
+    userActives(id, status) {
+      let data = {
+        id,
+        status
+      };
+      UserActives(data).then(res => {
+        this.$message.success({
+          message: res.data.message,
+          showClose: true,
+        });
+      });
     }
   },
   mounted() {

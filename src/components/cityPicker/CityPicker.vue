@@ -25,17 +25,37 @@
 import { GetCityNames } from "../../api/common.js";
 export default {
   name: "CityPicker",
+  props: {
+    region: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data() {
     return {
       province: "",
       city: "",
       area: "",
-      value: "",
-      options: [{ label: "test", value: "test" }],
       provinceOptions: [],
       cityOptions: [{ CITY_CODE: 0, CITY_NAME: "空" }],
       areaOptions: [{ AREA_CODE: 0, AREA_NAME: "空" }]
     };
+  },
+  watch: {
+    region(value) {
+      if (Object.keys(value).length !== 0) {
+        console.log(value);
+        this.province = value.province;
+        this.city = value.city;
+        this.area = value.area;
+        GetCityNames({ type: "city", province_code: this.province }).then(response => {
+          this.cityOptions = response.data.data.data;
+        });
+        GetCityNames({ type: "area", city_code: this.city }).then(response => {
+          this.areaOptions = response.data.data.data;
+        });
+      }
+    }
   },
   methods: {
     getCityNames(data) {

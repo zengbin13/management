@@ -15,11 +15,11 @@
           <el-input v-model="addForm.phone" placeholder="请输入内容"></el-input>
         </el-form-item>
         <el-form-item label="地区 :">
-          <city-picker @region-data="getRegion"></city-picker>
+          <city-picker @region-data="getRegion" :region="addForm.region"></city-picker>
         </el-form-item>
         <el-form-item label="是否启用 :">
-          <el-radio v-model="addForm.status" label="0">禁用</el-radio>
-          <el-radio v-model="addForm.status" label="1">启用</el-radio>
+          <el-radio v-model="addForm.status" label="1">禁用</el-radio>
+          <el-radio v-model="addForm.status" label="2">启用</el-radio>
         </el-form-item>
         <el-form-item label="角色 :">
           <el-checkbox-group v-model="addForm.role">
@@ -101,6 +101,9 @@ export default {
     },
     editData(value) {
       Object.assign(this.addForm, value);
+      if (typeof this.addForm.region === "string") {
+        this.addForm.region = JSON.parse(this.addForm.region);
+      }
     }
   },
   methods: {
@@ -113,7 +116,9 @@ export default {
         if (valid) {
           // 数据处理
           let requestData = Object.assign({}, this.addForm);
-          requestData.region = JSON.stringify(requestData.region);
+          if (typeof requestData.region !== "string") {
+            requestData.region = JSON.stringify(requestData.region);
+          }
           requestData.role = requestData.role.join();
           if (this.editData.id === "") {
             //add

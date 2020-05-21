@@ -6,7 +6,7 @@ import { getToKen, getUserName } from "../utils/cookie";
 import axios from "axios";
 
 //2.创建实例
-const BASEURL = process.env.NODE_ENV === "production" ? "" : "/api";
+const BASEURL = process.env.NODE_ENV === "production" ? "http://www.web-jshtml.cn/productapi/token" : "/api";
 const service = axios.create({
   baseURL: BASEURL,
   timeout: 5000,
