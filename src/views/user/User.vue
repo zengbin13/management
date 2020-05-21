@@ -78,8 +78,8 @@ export default {
           { label: "用户名", field: "username" },
           { label: "真实姓名", field: "truename", width: "120" },
           { label: "手机号", field: "phone", width: "200" },
-          { label: "地区", field: "region", width: "120" },
-          { label: "角色", field: "role", width: "120" },
+          // { label: "地区编码", field: "region", width: "120" },
+          { label: "角色", field: "role", width: "220" },
           {
             label: "禁启用状态",
             field: "status",
@@ -156,7 +156,6 @@ export default {
       this.loading = true;
       GetList(this.requestData).then(response => {
         this.tableData = response.data.data.data;
-        console.log(this.tableData);
         this.tableConfig.total = response.data.data.total;
         this.loading = false;
       });

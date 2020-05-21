@@ -11,7 +11,7 @@
           </template>
         </el-table-column>
         <!--文本数据渲染-->
-        <el-table-column :prop="item.field " :key="item.label" :label="item.label" :width="item.width" v-else>
+        <el-table-column :prop="item.field" :key="item.label" :label="item.label" :width="item.width" v-else>
         </el-table-column>
       </template>
     </el-table>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    Console 页面
+    控制台页面暂未完成
   </div>
 </template>
 

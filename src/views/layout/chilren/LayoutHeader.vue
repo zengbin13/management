@@ -15,7 +15,7 @@
 
 <script>
 import SvgIcon from "../../../components/svgIcon/SvgIcon";
-import { getUserName} from "@/utils/cookie.js";
+import { getUserName } from "@/utils/cookie.js";
 
 export default {
   name: "LayoutHeader",
@@ -32,14 +32,14 @@ export default {
     //退出控制页面
     exitConsole() {
       //清除token userName
-      this.$store.commit("login/EXIT_LOGIN")
+      this.$store.commit("login/EXIT_LOGIN");
       //跳转到login
-      this.$router.push("/login")
+      this.$router.push("/login");
       //message提醒
       this.$message({
         type: "success",
         message: "退出成功"
-      })
+      });
     }
   },
   computed: {
@@ -59,6 +59,7 @@ export default {
 }
 .menu {
   height: 75px;
+  cursor: pointer;
   .icon-menu {
     font-size: 24px;
     margin-left: 20px;
@@ -81,6 +82,7 @@ export default {
     display: inline-block;
     width: 75px;
     border-left: 1px solid #ededed;
+    cursor: pointer;
     .icon-power {
       font-size: 24px;
       position: relative;
