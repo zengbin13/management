@@ -1,5 +1,6 @@
 <template>
   <div class="login">
+    <p class="test">初始账号:1762030184@qq.com 初始密码:zb12345678</p>
     <div class="container">
       <!-- tab bar 部分 -->
       <div class="tabs">
@@ -94,7 +95,7 @@ export default {
       currentIndex: 0,
       isShowPassword2: false,
       loginFrom: {
-        mail: "1762030184@qq.com",
+        mail: "",
         password: "",
         password2: "",
         checkCode: ""
@@ -252,6 +253,12 @@ export default {
 .login {
   background-color: $bgColor;
   min-height: 100vh;
+  .test {
+    position: absolute;
+    color: #fff;
+    top: 20px;
+    left: 20px;
+  }
   .container {
     position: relative;
     top: 20vh;
